@@ -7,15 +7,9 @@
 #include <string>
 #include <stdexcept>
 
-PipelineStage* PipelineStage::process()
+std::vector<uint8_t> PipelineStage::get_result()
 {
-	std::vector<uint8_t> new_data = this->process_data();
-	this->action = this->get_next_action();
-	if (this->action == Action::Done) {
-		return this;
-	}
-	PipelineStage* new_stage = create_stage(this->action, std::move(new_data), std::move(this->metadata));
-	return new_stage;
+	return this->data;
 }
 
 PipelineStage::Action PipelineStage::get_action_from_uri(const std::string_view uri)
@@ -32,16 +26,17 @@ PipelineStage::Action PipelineStage::get_action_from_uri(const std::string_view 
 	return Action::Done;
 }
 
-PipelineStage* PipelineStage::create_stage(PipelineStage::Action action, std::vector<uint8_t>&& data, std::unordered_map<std::string, std::string>&& metadata)
+// Factory to create the right stage instance
+std::unique_ptr<PipelineStage> PipelineStage::create_stage(PipelineStage::Action action, std::vector<uint8_t>&& data, std::unordered_map<std::string, std::string>&& metadata)
 {
 	switch (action)
 	{
 	case PipelineStage::Action::DecodeImage:
-		return new DecodeImageStage(action, std::move(data), std::move(metadata));
+		return std::make_unique<DecodeImageStage>(action, std::move(data), std::move(metadata));
 	case PipelineStage::Action::DecompressData:
-		return new DecompressDataStage(action, std::move(data), std::move(metadata));
+		return std::make_unique<DecompressDataStage>(action, std::move(data), std::move(metadata));
 	case PipelineStage::Action::ParseJson:
-		return new ParseJsonStage(action, std::move(data), std::move(metadata));
+		return std::make_unique<ParseJsonStage>(action, std::move(data), std::move(metadata));
 	case PipelineStage::Action::Done:
 		std::unreachable();
 	default:
@@ -54,6 +49,8 @@ PipelineStage::PipelineStage(PipelineStage::Action action, std::vector<uint8_t>&
 {
 }
 
+// Example implementation of a way to get the next action.
+// Can be overriden by the pipeline
 PipelineStage::Action PipelineStage::get_next_action()
 {
 	std::string& uri = this->metadata.at("uri");

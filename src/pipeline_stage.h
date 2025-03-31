@@ -1,19 +1,19 @@
 #pragma once
 
+#include <string_view>
+#include <memory>
 #include <unordered_map>
-#include <string>
 
 class PipelineStage {
 public:
 	enum class Action { DecodeImage, DecompressData, ParseJson, Done };
 
 	Action action;
-	PipelineStage* process();
+	std::vector<uint8_t> get_result();
 
 	static PipelineStage::Action get_action_from_uri(const std::string_view uri);
-	static PipelineStage* create_stage(PipelineStage::Action action, std::vector<uint8_t>&& data, std::unordered_map<std::string, std::string>&& metadata);
+	static std::unique_ptr<PipelineStage> create_stage(PipelineStage::Action action, std::vector<uint8_t>&& data, std::unordered_map<std::string, std::string>&& metadata);
 	virtual ~PipelineStage() = default;
-protected:
 	std::vector<uint8_t> data;
 	std::unordered_map<std::string, std::string> metadata;
 

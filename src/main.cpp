@@ -2,16 +2,14 @@
 
 int main()
 {
-	ComputePipeline pipeline;
+	ComputePipeline pipeline ("http://image.jpeg.gz");
+	std::vector<uint8_t> result = pipeline.get_result();
 
-	PipelineStage* stage = pipeline.load("http://image.jpeg.gz");
-	while (stage->action != PipelineStage::Action::Done) {
-		PipelineStage* newStage{ stage->process() };
-		if (newStage != stage) {
-			delete stage;
-		}
-		stage = newStage;
-	}
+	// You can also reuse the pipeline with new data
+	pipeline.load("bundle://db.json.gz");
+	pipeline.process_fully();
+
+	auto second_result = pipeline.get_result();
 
 	return 0;
 }

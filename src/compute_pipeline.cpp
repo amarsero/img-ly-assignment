@@ -2,10 +2,51 @@
 
 #include <iostream>
 
-PipelineStage* ComputePipeline::load(const std::string& uri)
+ComputePipeline::ComputePipeline(std::string&& uri)
+	: pipeline(_load(std::move(uri)))
+{
+}
+
+void ComputePipeline::process_fully()
+{
+	while (!is_done()) {
+		process();
+	}
+}
+
+bool ComputePipeline::process()
+{
+	if (!is_done()) {
+		std::vector<uint8_t> new_data = this->pipeline->process_data();
+		this->pipeline->action = this->pipeline->get_next_action();
+		if (this->pipeline->action == PipelineStage::Action::Done) {
+			return true;
+		}
+		this->pipeline = PipelineStage::create_stage(this->pipeline->action, std::move(new_data), std::move(this->pipeline->metadata));
+	}
+	return false;
+}
+
+std::vector<uint8_t> ComputePipeline::get_result()
+{
+	process_fully();
+	return this->pipeline->get_result();
+}
+
+bool ComputePipeline::is_done()
+{
+	return this->pipeline->action == PipelineStage::Action::Done;
+}
+
+void ComputePipeline::load(std::string&& uri)
+{
+	this->pipeline = _load(std::move(uri));
+}
+
+std::unique_ptr<PipelineStage> ComputePipeline::_load(std::string&& uri)
 {
 	std::vector<uint8_t> bytes = get_bytes_from_uri(uri);
-	PipelineStage* stage = PipelineStage::create_stage(
+	std::unique_ptr<PipelineStage> stage = PipelineStage::create_stage(
 		PipelineStage::get_action_from_uri(uri),
 		std::move(bytes),
 		{ {"uri", uri} }

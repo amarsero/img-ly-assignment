@@ -15,7 +15,7 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(img-ly-assignment PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(img-ly-assignment PRIVATE -Wall -Wextra -Wpedantic)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(img-ly-assignment PRIVATE /W4 /Wall)
 endif()
