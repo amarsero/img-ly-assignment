@@ -8,7 +8,7 @@ endif()
 
 project ("img-ly-assignment")
 
-add_executable (img-ly-assignment "src/main.cpp"  "src/compute_pipeline.cpp" "src/compute_pipeline.h")
+add_executable (img-ly-assignment "src/main.cpp" "src/compute_pipeline.cpp" "src/pipeline_stage.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET img-ly-assignment PROPERTY CXX_STANDARD 20)
