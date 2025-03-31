@@ -4,9 +4,9 @@ int main()
 {
 	ComputePipeline pipeline;
 
-	PipelineStage* stage = pipeline.load("http://image.json.gz");
-	while (!stage->actions.empty()) {
-		stage = pipeline.process(std::move(*stage));
+	PipelineStage* stage = pipeline.load("http://image.jpeg");
+	while (stage->action != PipelineStage::Action::Done) {
+		stage->process();
 	}
 
 	return 0;
