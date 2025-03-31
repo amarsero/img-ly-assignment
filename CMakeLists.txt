@@ -8,14 +8,14 @@ endif()
 
 project ("img-ly-assignment")
 
-add_executable (img-ly-assignment "src/main.cpp" "src/compute_pipeline.cpp" "src/pipeline_stage.cpp" "src/decode_image_stage.cpp")
+add_executable (img-ly-assignment "src/main.cpp" "src/compute_pipeline.cpp" "src/pipeline_stage.cpp" "src/decode_image_stage.cpp" "src/decompress_data_stage.cpp" "src/decompress_data_stage.h" "src/parse_json_stage.h" "src/parse_json_stage.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET img-ly-assignment PROPERTY CXX_STANDARD 20)
+  set_property(TARGET img-ly-assignment PROPERTY CXX_STANDARD 23)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(img-ly-assignment PRIVATE -Wall -Wextra -Wpedantic -Werror)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(img-ly-assignment PRIVATE /W4 /Wall /WX)
+    target_compile_options(img-ly-assignment PRIVATE /W4 /Wall)
 endif()

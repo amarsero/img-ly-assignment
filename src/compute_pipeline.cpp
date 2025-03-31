@@ -23,13 +23,13 @@ std::vector<uint8_t> ComputePipeline::get_bytes_from_uri(const std::string& uri)
 {
 	std::vector<uint8_t> data;
 	if (uri.starts_with("file://")) {
-		download("read file", uri, data);
+		download("Read file", uri, data);
 	}
 	else if (uri.starts_with("http://")) {
-		download("downloading file", uri, data);
+		download("Downloading file", uri, data);
 	}
 	else if (uri.starts_with("bundle://")) {
-		download("downloading asset", uri, data);
+		download("Downloading asset", uri, data);
 	}
 	else {
 		throw std::runtime_error("Unimplemented storage type");

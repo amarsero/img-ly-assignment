@@ -4,9 +4,13 @@ int main()
 {
 	ComputePipeline pipeline;
 
-	PipelineStage* stage = pipeline.load("http://image.jpeg");
+	PipelineStage* stage = pipeline.load("http://image.jpeg.gz");
 	while (stage->action != PipelineStage::Action::Done) {
-		stage->process();
+		PipelineStage* newStage{ stage->process() };
+		if (newStage != stage) {
+			delete stage;
+		}
+		stage = newStage;
 	}
 
 	return 0;
