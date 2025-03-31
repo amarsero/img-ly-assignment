@@ -11,5 +11,7 @@ int main()
 
 	auto second_result = pipeline.get_result();
 
-	return 0;
+	pipeline.load("file://db.jpeg");
+	// Or call process multiple times, like a coroutine
+	while(pipeline.process()) {}
 }
